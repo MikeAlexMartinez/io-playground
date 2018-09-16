@@ -1,0 +1,293 @@
+================
+# TDD in Ionic #
+================
+
+TDD tests will be more implementaion specific (more focused) e.g. x() will add an item to the array.
+BDD tests will describe on a high level what an app should do functionally e.g. doing x will add an item to the product list.
+
+AAA:
+- Arrange - Set up the objects required in order to perform the test
+- Act - perform the action we are testing
+- Assert - assert any objects change in the way we have defined.
+
+One Assertion per test
+
+Tests should be independent (user beforeeach hooks etc)
+
+Isolate Unit Tests
+
+Don't try to test everything - focus on key scenarios and edge cases when they arise.
+
+Mocks, Stubs, and Spies - Can be used to fake functionality, allowing tests to be independent.
+  Mocks and stubs can be provided to the test in the set up.
+  Stubs - return a value required from a function for the test
+  Mocks - Structure of the object is important and more complex than returning data.
+
+  "To summarise, I would say that: stubs fake things that return values that might change from test to test, mocks
+   fake the general structure of an object and we would not create different versions of the same mock."
+
+  Spies - Keep an eye on things for you. i.e. can verify that something was called.
+
+Jasmine, Karma and Protractor
+  Jasmine is what allows us to create unit tests and Karma is what runs them.
+  Jasmine is composed of three key functions,
+    describe() - Arrange - specs
+    it() - Act - spec
+    expect() - Assert
+
+    beforeEach() allows us to define a clean environment before each it();
+
+    Matchers are used with expect() in order to assert whether something is true or not.
+    e.g. expect(something).toThrow()
+      expect(something).toBe()
+      expect(something).toEqual()
+      the .not property can negate an expression
+    e.g. expect(something).not.toEqual()
+
+  Protractor is used for E2E tests. Key difference is while unit tests test code, and E2E tests
+  behaviour. With Protractor you still define describe, it and expect functions but you will also
+  utilise some kind of page object that enables you to control a browser for instance.
+
+  It is advisable and good practice to use a page object which will abstract away the use of css
+  selectors for picking page elements as this will allow for DRY, less brittle E2E tests.
+
+Angular's TestBed - Allows us to create an isolated Angular Testing environment for whatever component we
+are trying to test.
+
+e.g. TestBed =>
+    describe('Home Page', () => {
+
+      let comp: HomePage;
+      let fixture: ComponentFixture<HomePage>;
+
+      beforeEach(async(() => {
+
+        TestBed.configure({
+          declarations: [HomePage],
+          imports: [
+            IonicModule.forRoot(HomePage)
+          ],
+          providers: [
+            { provide: NavController, useClass: NavMock }
+          ]
+        }).compileComponents();
+
+      }));
+
+      beforeEach(() => {
+        fixture = TestBed.createComponent(HomePage);
+        comp = fixture.componentInstance;
+      });
+    });
+
+Key Points: TestBed configuration is wrapped in the angular 'async()' function to ensure
+  we wait for the testbed to be properly configured.
+    configuring the TestBed is like creating an AppModule except we leave out anything we don't need. 
+
+Test Development Cycle
+  General TDD process looks like this:
+    1. Write a test for functionality
+    2. Check that the test fails
+    3. Implement code to satisfy the test
+    4. Repeat
+
+  Common questions:
+    - What should you build first?
+    - what test do you write first?
+    - How do you write a test for something that doesn't exist yet?
+
+  You should start with a specific requirement that you want to implement first. You then work through the following
+  process:
+    1. Write an E2E test for some specific requirement
+    2. Check that the E2E test fails
+    3. Based on the failure you get from the E2E test, decide what functionality needs to be worked on in oreder to get it passing
+    4. Write a unit test for the functionality you have decided that you need to create to get the E2E test to pass
+    5. Check that the unit tests fail
+    6. Implement code to satisfy the unit test
+    7. Check if the E2E test passes now
+    8. if E2E test passes, go to Step 1. If the E2E test fails, go to Step 3.
+
+  The process is a recurring one that you continually use as you build the application.
+    
+    Your Requirements determine your E2E tests.
+    Your E2E tests determine your unit tests.
+    By making Unit tests pass, your E2E tests will eventually pass.
+
+  Focus first on the key / core requirements that cut to the core purpose of your application.
+
+Injected Dependencies and Spying on Function calls:
+  When injecting objects into components, we don't want to test the objects being injected, but how the component under test
+  interacts with the component. For this we use spies.
+
+  1. Need to create a spy.
+  2. use the fixture object to get a reference to the injected item.
+  3. Confirm that item was called as expected.
+
+Dealing with Asynchrony in tests
+  fakeAsync, flushMicrotasks, and tick
+  fakeAsync creates a zone in which we can control time.
+    we can control time using mflushMicrotasks and tick.
+  microtasks are created when certain tasks are performed within the zone. some async tasks aren't microtasks so flushMicrotasks
+  won't clear them (e.g setTimeout()).
+
+  e.g =>
+
+  it('should test some asynchronous code', fakeAsync(() => {
+
+    let flag = false;
+
+    setTimeout(() => { flag = true; }, 100);
+
+    expect(flag).toBe(false); // PASSES
+
+    tick(50);
+
+    expect(flag).toBe(false); // PASSES
+
+    tick(50);
+
+    expect(flag).toBe(true); // PASSES
+
+  }));
+
+  An example with Promises and flushMicrotasks();
+
+  e.g. => 
+  it('should test some asynchronous code', fakeAsync(() => {
+
+    let flagOne = false;
+    let flagTwo = false;
+
+    Promise.resolve(true).then((result) => {
+        flagOne = true;
+    });
+
+    Promise.resolve(true).then((result) => {
+        flagTwo = true;
+    });
+
+    flushMicrotasks();
+
+    expect(flagOne).toBe(true); // PASSES
+    expect(flagTwo).toBe(true); // PASSES
+
+  }));
+
+  and observables:
+  it('should test some asynchronous code', fakeAsync(() => {
+
+    let flagOne = false;
+    let flagTwo = false;
+
+    Promise.resolve(true).then((result) => {
+        flagOne = true;
+    });
+
+    Promise.resolve(true).then((result) => {
+        flagTwo = true;
+    });
+
+    flushMicrotasks();
+
+    expect(flagOne).toBe(true); // PASSES
+    expect(flagTwo).toBe(true); // PASSES
+
+  }));
+
+  but it won't work when a macroTask is used, then ticks must be used.
+  e.g.
+  it('should test some asynchronous code', fakeAsync(() => {
+
+    let flag = false;
+
+    let testPromise = new Promise((resolve) => {
+
+        setTimeout(() => {
+            resolve(true);
+        }, 3000);
+
+    });
+
+    testPromise.then((result) => {
+        flag = result;
+    });
+
+    expect(flag).toBe(false); // PASSES
+
+    tick(3000);
+
+    expect(flag).toBe(true); // PASSES
+
+  }));
+
+Setting up a MockBackend:
+  e.g. => 
+
+import { TestBed, inject, async } from '@angular/core/testing';
+import { Http, HttpModule, BaseRequestOptions, Response, ResponseOptions } from '@angular/http';
+import { MockBackend } from '@angular/http/testing';
+import { LoginService } from './login-service';
+
+describe('Provider: Login Service', () => {
+
+    beforeEach(async(() => {
+
+        TestBed.configureTestingModule({
+
+            declarations: [
+
+            ],
+
+            providers: [
+                LoginService,
+                MockBackend,
+                BaseRequestOptions,
+                
+                // Provide factory to use mockBackend instead
+                // of Http Service
+
+                {
+                    provide: Http, 
+                    useFactory: (mockBackend, options) => {
+                        return new Http(mockBackend, options);
+                    },
+                    deps: [MockBackend, BaseRequestOptions]
+                }
+            ],
+
+            imports: [
+                HttpModule
+            ]
+
+        }).compileComponents();
+
+    }));
+
+    it('checkKey should make a call to the server to check the validity of a key', inject([LoginService, MockBackend], (loginService, mockBackend) => {
+
+        let key = 'ewu0fef0ewuf08j3892jf98';    
+        let mockResponse = '{"isValid": true}';
+
+        // Send mock response to login service.
+
+        mockBackend.connections.subscribe((connection) => {
+
+            connection.mockRespond(new Response(new ResponseOptions({
+                body: mockResponse
+            })));
+
+        });
+
+        let serverResponse; 
+
+        loginService.checkKey(key).subscribe((result) => {
+            serverResponse = result;
+        });
+
+        expect(serverResponse.isValid).toBe(true);
+    }));
+  });
+
+Dealing with storage and reauthentication can be awkward.
+  use onPrepare in protractor conf to login.
+  to test login, logout first, then log back in.

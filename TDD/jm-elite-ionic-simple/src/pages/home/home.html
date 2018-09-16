@@ -1,0 +1,33 @@
+<ion-header>
+
+  <ion-navbar>
+    <ion-title>Home</ion-title>
+  </ion-navbar>
+
+  <ion-buttons left>
+    <button
+      (click)="logout()"
+      class="logout-button"
+      ion-button
+      icon-only
+    >
+      <ion-icon name="log-out"></ion-icon>
+    </button>
+  </ion-buttons>
+
+</ion-header>
+
+
+<ion-content padding>
+
+  <ion-list class="module-list">
+    <button
+      ion-item
+      *ngFor="let module of modules"
+      (click)="openModule(module)"
+    >
+      {{module.title}}
+    </button>
+  </ion-list>
+
+</ion-content>
