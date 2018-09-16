@@ -1,3 +1,146 @@
 ==================================
 # High Performance Apps in Ionic #
 ==================================
+
+# Section 1:
+# ================================
+# Understanding Browser Rendering
+
+Basic Process = Javascript => Style => Layout => Paint => Composite
+
+A high performing application should attempt to achieve 60 frames per second.
+i.e. should carry out the above chain rendering a frame 60 times per second.
+
+1. Javascript / CSS
+The first step in the process is something that triggers a change.
+
+2. Style
+Stule sheets are processed to determine what styles are applied to each element.
+
+3. Layout
+Once style is determined it can work out how big elements are and where on the 
+screen they should be.
+
+4. Paint
+Pixels are drawn on the screen
+
+5. Composite
+Ensures that elements that are layered are displayed in the correct order.
+i.e. the item on top should be visible.
+
+# How to Improve Broswer Rendering
+  Aims:-
+    1. Avoid as many of the steps above as possible.
+    2. Make the work that needs to be done as efficient as possible.
+
+Biggest win is to avoid the 'Layout' step wherever possible as everything on the
+page needs to be recalculated.
+
+Ideal step is to just trigger the composite step as this means just organising the
+layers.
+
+Max Lynch demonstrated the usefulness of CSS Containment using the:
+
+  contain: layout;
+
+css property on an element as it informs the page that the following element won't
+affect the layout of other elements on the page. 
+
+(Video) Debugging Ionic Applications When Deployed to an iOS Device: https://www.youtube.com/watch?v=9J8AxhDxtTE
+(Video) Debugging Ionic Applications When Deployed to an Android Device: https://www.youtube.com/watch?v=Y1rD954ZyKA
+
+# Section 2:
+# ================================
+# Creating Production Builds
+
+Production builds perform a number of extra steps that can create upto a 3x decrease
+in app boot time.
+
+- ngc performs AOT compilation which means the javascript is pre-compiled allowing 
+the browser to do less work.
+
+- optimization performs tree-shaking. This means dead-code can be removed from the #
+application.
+
+- cleancss and uglifyjs perform optimisations and minification on your css and js.
+
+# Section 3:
+# ================================
+# Measuring Network Requests
+
+You ought to test the performance on the proper platforms, across different devices.
+
+Green indicates time to first byte. 
+Blue is download time.
+
+Performance tab is better for seeing first paint. Also good for checking network 
+performance.
+
+Time to first paint can be affected alot by the amount of work the script has to do
+creating elements.
+
+It can be good to use lazy-loading with pre-loading which allows you to preload 
+lazy-loaded pages in the background.
+
+# Debugging Network Requests
+
+When debugging network requests you should always have disable cache clicked in 
+order to force the application to reload resources properly.
+
+Throttling and Offline allows you to simulate different network types.
+
+Key performance things to improve:-
+  1. Time to First Meaningful Paint (TTFMP) and
+  2. Time to Interactive (TTI)
+
+Lazy-Loading Options:
+  1. Load entire application
+  2. Load Root page and lazy load other pages when they are accessed.
+  3. Only load root page, then preload unused pages right away.
+
+# Remove Unnecessary Files and Optimise Large Files
+ - Run images through an optimisation program such as TinyPNG (reduce file size by 80%)
+
+Ensure that your css files and js files are being bundled into your main files,
+and not being loaded separately, unminified.
+
+# Section 3:
+# ================================
+# Measuring and Debugging Memory Usage
+
+To measure memory you can use the performane tab in devtools but ensure you tick
+the memory usage checkbox so memory is being monitored. Make sure you collect 
+garbage first so that you are starting from a clean slate.
+
+Rise and fall is ideal, as it means the garbage collector is working.
+
+Primary thing of interest is the JS Heap.
+
+Lots of DOM elements can  cause a slow down also.
+
+Key rules to avoid memory issues:
+1. Unsubscribe from observables if they are no longer needed.
+2. If you do add your own event listeners, make sure to remove them when they are no
+  longer needed.
+3. Avoid breaking the rules by doing things like storing global variables on the 
+  window object. You should never need to do this, but if you do it, be very careful (that's a perfect situation for creating memory leaks.);
+4. Unlike pages, providers persist throughout the life of an application, so make 
+  sure they are not hogging up memory.
+5. Make sure to clear any setIntervals you use once you are done with them, even if 
+  they are not doing anything.
+6. Be wary of growing memory usage, like in situations with an infinitely growing     list of data.
+
+# Section 4:
+# ================================
+# Debugging Framerate issues
+
+Should aim for 60fps. = 1 frame every 0.01666666 seconds.
+
+Should focus on the frames section of performance time.
+
+You should animate specific properties, which don't affect other elements on the 
+page. You don't want to trigger calculation on the layout.
+
+It is difficult to create performant animations in web apps but it's not impossible.
+
+It can be both css and long-running scripts that cause low frame-rate.
