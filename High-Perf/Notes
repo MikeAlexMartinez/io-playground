@@ -128,7 +128,8 @@ Key rules to avoid memory issues:
   sure they are not hogging up memory.
 5. Make sure to clear any setIntervals you use once you are done with them, even if 
   they are not doing anything.
-6. Be wary of growing memory usage, like in situations with an infinitely growing     list of data.
+6. Be wary of growing memory usage, like in situations with an infinitely growing 
+  list of data.
 
 # Section 4:
 # ================================
@@ -141,6 +142,74 @@ Should focus on the frames section of performance time.
 You should animate specific properties, which don't affect other elements on the 
 page. You don't want to trigger calculation on the layout.
 
-It is difficult to create performant animations in web apps but it's not impossible.
+It is difficult to create performant animations in web apps but it's not 
+impossible.
 
 It can be both css and long-running scripts that cause low frame-rate.
+
+Tips from this article: 
+https://www.sitepoint.com/introduction-to-hardware-acceleration-css-animations/
+  - By creating composite layers elements (using transforms) we can force the GPU
+    into moving an item around the page which avoids triggeruing layout changes.
+  - When does the browser create a separate composite layer?
+    - For 3D perspective CSS transforms (in our example)
+    - For <video> and <canvas> elements.
+    - For an element that overlaps another element extracted to a composite layer
+    (e.g. using z-index);
+  - Only the following CSS property changes on elements can be handled on the GPU
+    - transform
+    - opacity
+    - filter
+  - By giving an element a transform property initially, we force the browser to
+    add the element to the GPU.
+  - Use Hardware Acceleration with Caution
+    - Loading too meany textures to the GPU may cause memory issues. More critical
+    on mobile devices.
+  - (Not supported in Edge yet) - tells browser to use GPU 
+    .example {
+      will-change: transform;
+    } 
+  - Else can use the transform hack:
+    .cube {
+      -webkit-transform: translateZ(0);
+      -moz-transform: translateZ(0);
+      -ms-transform: translateZ(0);
+      -o-transform: translateZ(0);
+      transform: translateZ(0);
+      /* Other transform properties here */
+    }
+
+  - if flickering present in Chrome and Safari, following declarations can fix
+    the issue:
+    .cube {
+      -webkit-backface-visibility: hidden;
+      -moz-backface-visibility: hidden;
+      -ms-backface-visibility: hidden;
+      backface-visibility: hidden;
+
+      -webkit-perspective: 1000;
+      -moz-perspective: 1000;
+      -ms-perspective: 1000;
+      perspective: 1000;
+      /* Other transform properties here */
+    }
+
+    or instead of the above, this also works:
+    .cube {
+      -webkit-transform: translate3d(0, 0, 0);
+      -moz-transform: translate3d(0, 0, 0);
+      -ms-transform: translate3d(0, 0, 0);
+      transform: translate3d(0, 0, 0);
+      /* Other transform properties here */
+    }
+
+  - Be careful with each of these methods and only use them if you experience a 
+    true performance win. Using the GPU unnecessarily can cause significant 
+    performance issues because it increases memory use –– it will also affect the 
+    battery life on mobile devices.
+
+Main points from module:
+  - Avoid writing Javascript that triggers a 'Layout' whenever possible, or at least    
+    optimise this.
+  - Avoid using CSS that is going to trigger layouts
+  - Keep your CSS as small and simple as possible
