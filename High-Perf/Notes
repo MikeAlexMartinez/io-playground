@@ -208,8 +208,132 @@ https://www.sitepoint.com/introduction-to-hardware-acceleration-css-animations/
     performance issues because it increases memory use –– it will also affect the 
     battery life on mobile devices.
 
-Main points from module:
-  - Avoid writing Javascript that triggers a 'Layout' whenever possible, or at least    
-    optimise this.
-  - Avoid using CSS that is going to trigger layouts
-  - Keep your CSS as small and simple as possible
+  Main points from module:
+    - Avoid writing Javascript that triggers a 'Layout' whenever possible, or at least    
+      optimise this.
+    - Avoid using CSS that is going to trigger layouts
+    - Keep your CSS as small and simple as possible
+
+# Section 5:
+# ================================
+# Bundle Size and Lazy Loading
+
+The goal here is to get our application booting as quickly as possible, which means 
+optimising those initial network requests that are required to get to our 'First Meaningful
+Paint' and the 'Time to Interactive'.
+
+To investigate the parts of our app that take the most space we can use the
+'source map explorer'.
+
+  npm install -g source-map-explorer
+
+To use the source-map-explorer you can use:
+
+source-map-expolorer www/build/main.js www/build/main.js.map
+
+You can also run the command to the vendor file that is created.
+
+You should review these files to find opportunites to remove unused, or large libraries,
+for potentially smaller alternatives.
+
+Lazy Loading has three options:
+  1. Load entire application
+  2. Load Root page and lazy load other pages when they are accessed.
+  3. Only load root page, then preload unused pages right away.
+
+To add a preloading strategy use the following option to the main app.module.ts
+
+  @NgModule({
+    declarations: [
+      MyApp
+    ],
+    imports: [
+      BrowserModule,
+      IonicModule.forRoot(MyApp, {
+        preloadModules: true
+      })
+    ],
+    bootstrap: [IonicApp],
+    entryComponents: [
+      MyApp
+    ]
+  })
+  export class AppModule { }
+
+You can also identify priority pages to load first by using the priority property in
+the IonicPage definition.
+
+  @IonicPage({
+    priority: 'high'
+  })
+
+other options are:
+  'low' - which is the default or,
+  'off' - which means the module will be loaded when it's accessed.
+
+# Section 6:
+# ================================
+# Interacting with the DOM Efficiently
+
+  How to avoid 'DOM Thrashing'
+  Dom thrashing is caused by layout changes on rapid fire.
+
+  We should avoid a 'Forced Synchronous Layout'.
+  This occers when we do reads and writes from the DOM in quick succession.
+
+  Scrolling Lists often cause DOM Thrashing as they fire off lots of sychronous layouts in 
+  quick succession.
+
+# Using DOMController to Manage Writes.
+Ionic provides a controller to help manage DOM read and writes to help prevent DOM 
+Thrashing.
+ e.g. 
+  import { DoMController } from 'ionic-angular';
+  ...
+  constructor(private domCtrl: ComController ) { }
+  ...
+  this.domCtrl.write(() => {
+    // do writes
+  });
+  ...
+  this.domCtrl.read(() => {
+    // do reads
+  });
+
+ionScroll provides a scroll event which allows you to trigger a method called domWrite.
+
+
+# Section 7:
+# ================================
+# Perceived Performance
+
+Application design can improve or worsen the perceived perfomance of an application.
+
+To make an application feel faster, one should provide feedback to a user interaction as
+quickly as possible. A response should be within 80ms in order for it to feel performant.
+
+A good thing to do is to perform operations like the following:
+1. Click the page button
+2. Immediately navigate to the new page
+3. Display a loading indicator where the content needs to be loaded in, or if necessary an 
+   entire screen loading overlay
+4. Perform the necessary loading
+5. Remove the loading indicator
+
+You can also provide loading bars or skeleton cards to make a page feel more performant.
+
+
+# Section 8:
+# ================================
+# Dealing With Large Lists
+
+Large lists on a mobile can always be difficult.
+
+three things you can do to help deal with any issues is to:
+  - Simplify the list items to reduce strain on the browser rendering process.
+  - User ionic's VirtualScroll to "recycle" DOM elements as the list is scrolled
+  - Use an infinite scroll approach to load list items as they are required.
+
+
+
+
