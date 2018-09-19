@@ -315,12 +315,13 @@ quickly as possible. A response should be within 80ms in order for it to feel pe
 A good thing to do is to perform operations like the following:
 1. Click the page button
 2. Immediately navigate to the new page
-3. Display a loading indicator where the content needs to be loaded in, or if necessary an 
-   entire screen loading overlay
+3. Display a loading indicator where the content needs to be loaded in, or if 
+  necessary an entire screen loading overlay
 4. Perform the necessary loading
 5. Remove the loading indicator
 
-You can also provide loading bars or skeleton cards to make a page feel more performant.
+You can also provide loading bars or skeleton cards to make a page feel more 
+performant.
 
 
 # Section 8:
@@ -334,6 +335,88 @@ three things you can do to help deal with any issues is to:
   - User ionic's VirtualScroll to "recycle" DOM elements as the list is scrolled
   - Use an infinite scroll approach to load list items as they are required.
 
+ionic allows us to use the [virtualScroll] directives to reuse DOM elements instead
+of having to render everything in the list. One requirement for virtualScroll is to
+supply an approxItemHeight attribute on the list. Additionally, once the data for 
+the list is set, it should not change.
 
+To use infinite-scroll in ionic we can utilise the infinite scroll component.
 
+e.g.
+    <ion-infinite-scroll (ionInfinite)="doInfinite($event)">
+        <ion-infinite-scroll-content></ion-infinite-scroll-content>
+    </ion-infinite-scroll>
 
+If a user infinitely scrolls we might need to consider adding a point at which
+the elements at the beginning of the list are removed.
+
+# Section 9:
+# ================================
+# Animation Performance
+
+As touched on earlier, animation performance is affected a lot by the css properties
+used to animate an object. The key point is to avoid triggering a new layout as this
+causes significant work fro the browser.
+
+Triggering paint is not quite as bad. Which means we can change properties like, 
+color, background-color and box-shadow.
+
+Properties that only trigger the composite step are the best to animate. Properties
+such as opacity, transforms and filters are perfect for this.
+
+# Section 10:
+# ================================
+# Speeding Up Observables and Promises
+
+It's easy to negatively affect the performance of our application by misusing 
+Promises of observables.
+
+Making use of Promise.all() when we are able to is useful.
+Observable.forkJoin() is the equivalent for obseravables.
+
+Generally, it's easier to re-engineer an API so that you can avoid, dependent 
+promises and observables, to avoid needing to make mutliple sequential calls
+to a back-end.
+
+# Section 11:
+# ================================
+# Using Web Workers for Heavy Lifting
+
+We can create web workers to do specific scripting calculations etc. To do this
+we need to create additional JS files that aren't bundles into our application.
+
+We then create a worker using this function and from it we can pass data back and
+forth using messages.
+
+e.g => Web Worker in 'src/assets/js/doSort.js'
+  self.addEventListener('message', function(e){
+
+      var randomArray = [];
+      var length = e.data;
+
+      for(var i=0; i<length; i++){
+          randomArray.push(Math.random());
+      }
+
+      var sortedArray = randomArray.sort();
+
+      self.postMessage(sortedArray);
+
+  }, false);
+
+Interaction with main app =>
+  doSortWithWorker(){
+
+    this.sortWorker = new Worker('../assets/js/doSort.js');
+
+    this.sortWorker.addEventListener('message', (e) => {
+        console.log("done!");
+        //console.log(e.data);
+    }, false);
+
+    this.sortWorker.postMessage(1000000);
+
+  }
+
+Using profiling and identifying work that can be offloaded to a web worker can
+help create a smoother, more performant feeling application.
