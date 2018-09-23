@@ -1,3 +1,101 @@
 ========================================
 # Real-Time NoSQL Application in Ionic #
 ========================================
+
+Will create an app called Hangz:
+  - Has shared notice board.
+  - Has live-chat feature.
+
+High-level goals of the application:
+  - Users can post notices to a shared notice board.
+  - A notice must contain a title, and can optionally contain a description
+  - Only the user who created the notice will be able to edit or delete it.
+  - Users can participate in a live chat room with all other users of the application.
+  - A chat should contain a message, and each message should be attributed to the author.
+  - Only registered and authenticated users should have access to the application.
+  - If a user has previously logged in, and they habe an unexpired token, they should
+  be automatically logged in when returning to the application.
+  - Users should have offline to the data in the application that syncs when online.
+
+Most modern applications need offline access to be able to function effectively.
+When handling data that can stay offline one should consider:
+  - How do we keep track of what local data has and has not already been synced to the remote
+  database.
+  - When do we trigger the syncing process? How often do we do it?
+  - How do we tell if both the remote data and the local data has been modified at the same time,
+  creating a conflict.
+  - How do we handle these conflicts?
+
+CouchDB database implements a restful API:
+  e.g. to GET data:
+    http://someserver.com/mydatabase/_design/posts/_view/by_date_published
+
+  to trigger duplication across dbs we can simply fire off a POST request like so:
+  { 
+    "source":"http://example.org/example-database",
+    "target":"http://admin:password@127.0.0.1:5984/example-database",
+    "continuous":true
+  }
+  which says to sync the source to the target.
+
+  CouchDB stores a _rev field whihch helps determine when a document was last revised.
+  When updating an object one must send the _rev field with it, and providing the _rev field
+  matches, the new document update will be successful. I.e. first revision wins. When an update
+  is rejected, it creates a document with the _conflicts: true property present, so your application
+  is able to best handle the clash.
+
+To create a new PouchDB you can use this command:
+  - this.db = new PouchDB('kittens');
+Or to interact with a remote CouchDB database:
+  - this.db = new PouchDB('http://myserver.com:5984/kittens);
+To create a local PouchDB database that syncs with a remote CouchDB db you would do this:
+  - this.db = new PouchDB('kittens')
+    this.db.sync('http://myserver.com:5984/kittens', {
+      live: true,
+      retry: true
+    });
+
+To handle incoming changes we could:
+  - this.db.changes().on('change', () => {
+    console.log('Ch-Ch-Changes');
+  });
+
+To create a document in PouchDB we do something like this:
+  - let myDoc = {
+    _id: 'someid',
+    title: 'Test'
+  };
+
+  this.db.put(myDoc);
+
+When using CouchDB it's possible to create thousands of different databases.
+You could create one per person to keep access private. You could create a database
+to be shared between a group of people, and restrict access to those particpants.
+Or you could create one to store something for everyone to share.
+
+You should create a new document when it seems appropriate to do so. For Hangz it will be when:
+  - A user creates a note
+  - A user adding a todo
+  - A user creating a blog post
+  - A user creating a new invoice
+  - A user adding a post to their social feed.
+
+  echo "deb https://apache.bintray.com/couchdb-deb bionic main" | sudo tee -a /etc/apt/sources.list
+
+Steps - Set up blank template ionic app
+  installed pouchDB
+  added ionic cordova plugin add https://github.com/ionic-team/cordova-plugin-wkwebview-engine.git
+
+  Added pages
+  Added providers
+  Adding basic UI
+
+# Setting up basic UI
+  First goals:
+    - A notice page that displays a list of notices.
+    - An add notice page that allows for the creation of new notices.
+    - A chat Page that displays a list of chats, and allows for the creation of new chats.
+
+SetUp Tabs...
+
+Need to set up CORS configuration correctly to work with CouchDB
