@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, AlertController, ModalController } from 'ionic-angular';
 import { NoticesProvider } from '../../providers/notices/notices';
+import { UserProvider } from '../../providers/user/user';
+import { AuthProvider } from '../../providers/auth/auth';
 
 @IonicPage()
 @Component({
@@ -10,13 +12,16 @@ import { NoticesProvider } from '../../providers/notices/notices';
 export class NoticesPage {
 
   public notices: Object[] = [];
-  
+  public loading: any;
 
   constructor(
     private _navCtrl: NavController,
-    private _noticesProvider: NoticesProvider,
     private _alertCtrl: AlertController,
     private _modalCtrl: ModalController,
+    private _noticesProvider: NoticesProvider,
+    private _userProvider: UserProvider,
+    private _authProvider: AuthProvider,
+    
 
   ) {
     // Just some test notices for now
@@ -66,5 +71,9 @@ export class NoticesPage {
       ]
     });
     confirm.present();
+  }
+
+  logout(): void {
+    this._authProvider.logout();
   }
 }
