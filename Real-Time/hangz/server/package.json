@@ -1,0 +1,23 @@
+{
+  "name": "hangz",
+  "version": "0.1.0",
+  "description": "A Real-Time Chat Application",
+  "engines": {
+    "node": "6.11.1"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cors": "^2.8.3",
+    "del": "^3.0.0",
+    "dotenv": "^6.0.0",
+    "express": "^4.15.3",
+    "https": "^1.0.0",
+    "method-override": "^2.3.9",
+    "morgan": "^1.8.2",
+    "superlogin": "^0.6.1"
+  }
+}
