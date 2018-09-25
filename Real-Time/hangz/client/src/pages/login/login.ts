@@ -38,7 +38,6 @@ export class LoginPage {
     };
 
     this.authProvider.authenticate(credentials).subscribe((res) => {
-      console.log(res);
       if (typeof(res.token) !== 'undefined') {
         this.failedAttempt = false;
 

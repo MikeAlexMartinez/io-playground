@@ -22,6 +22,35 @@ export class AuthProvider {
     console.log('Hello AuthProvider Provider');
   }
 
+  reauthenticate() {
+    return new Promise((resolve, reject) => {
+      if (this.dataProvider.db === null) {
+        this.userProvider.getUserData().then((userData) => {
+          if (userData !== null) {
+            let now = new Date();
+            let expires = new Date(userData.expires);
+
+            if (expires > now) {
+              this.userProvider.currentUser = userData;
+
+              this.zone.runOutsideAngular(() => {
+                this.dataProvider.initDatabase(userData.userDBs.hangz);
+              });
+
+              resolve(true);
+            } else {
+              reject(true);
+            }
+          } else {
+            reject(true);
+          } 
+        });
+      } else {
+        resolve(true);
+      }
+    });
+  }
+
   authenticate(credentials) {
     return this.http.post(SERVER_ADDRESS + 'auth/login', credentials).map(res => res.json());
   }

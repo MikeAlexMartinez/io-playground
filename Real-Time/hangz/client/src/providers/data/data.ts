@@ -10,7 +10,7 @@ export class DataProvider {
   constructor() { }
 
   initDatabase(remote): void {
-    this.db = new PouchDB('hangzdb', {
+    this.db = new PouchDB('hangz', {
       auto_compaction: true
     });
 
