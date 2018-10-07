@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, AlertController, ModalController } from 'ionic-angular';
+import { IonicPage, NavController, AlertController, ModalController, LoadingController } from 'ionic-angular';
 import { NoticesProvider } from '../../providers/notices/notices';
 import { UserProvider } from '../../providers/user/user';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -21,8 +21,7 @@ export class NoticesPage {
     private _noticesProvider: NoticesProvider,
     private _userProvider: UserProvider,
     private _authProvider: AuthProvider,
-    
-
+    private _loadingCtrl: LoadingController
   ) {
     // Just some test notices for now
     this.notices = [
@@ -32,19 +31,31 @@ export class NoticesPage {
   }
 
   ionViewDidLoad() {
-    this._noticesProvider.init();
+    this.presentLoading();
 
-    this._noticesProvider.getNotices().subscribe(notices => {
-      this.notices = notices;
+    this._authProvider.reauthenticate().then((res) => {
 
-      if (this.notices.length === 0) {
-        this.notices.push({
-          author: 'Hanqz Admin',
-          title: 'Welcome!',
-          message: 'Looks like there aren\'t any notices yet. Click the \'+\' symbol to add one.'
-        });
-      }
+      this._noticesProvider.init();
+      this.loading.dismiss();
+
+      this._noticesProvider.getNotices().subscribe(notices => {
+        this.notices = notices;
+  
+        if (this.notices.length === 0) {
+          this.notices.push({
+            author: 'Hanqz Admin',
+            title: 'Welcome!',
+            message: 'Looks like there aren\'t any notices yet. Click the \'+\' symbol to add one.'
+          });
+        }
+      }, (err) => {
+        this.loading.dismiss();
+        this._navCtrl.setRoot('LoginPage');
+      });
+      
     });
+
+
   }
 
   openAddNoticePage(notice?): void {
@@ -75,5 +86,12 @@ export class NoticesPage {
 
   logout(): void {
     this._authProvider.logout();
+  }
+
+  presentLoading(): void {
+    this.loading = this._loadingCtrl.create({
+      content: 'Authenticating...'
+    });
+    this.loading.present();
   }
 }

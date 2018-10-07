@@ -25,16 +25,26 @@ export class ChatPage {
   ) { }
 
   ionViewDidLoad() {
-    this._chatProvider.init();
-    this._chatProvider.getChats().subscribe((chats) => {
-      this.chats = chats;
-      if(this.chats.length === 0) {
-        this.chats.push({
-          author: 'Hangz Admin',
-          message: 'Looks like nobody is around. Type a message below to start chatting!',
-        });
-      }
-    });
+    this.presentLoading();
+
+    this._authProvider.reauthenticate().then((res) => {
+      this.loading.dismiss();
+
+      this._chatProvider.init();
+      this._chatProvider.getChats().subscribe((chats) => {
+        this.chats = chats;
+        if(this.chats.length === 0) {
+          this.chats.push({
+            author: 'Hangz Admin',
+            message: 'Looks like nobody is around. Type a message below to start chatting!',
+          });
+        }
+      });
+
+    }, (err) => {
+      this.loading.dismiss();
+      this._navCtrl.setRoot('LoginPage');
+    })
   }
 
   addChat(): void {
@@ -55,5 +65,13 @@ export class ChatPage {
 
   logout(): void {
     this._authProvider.logout();
+  }
+
+  presentLoading(): void {
+    this.loading = this._loadingCtrl.create({
+      content: 'Authenticating...'
+    });
+
+    this.loading.present();
   }
 }

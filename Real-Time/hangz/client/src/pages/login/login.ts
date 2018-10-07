@@ -25,6 +25,16 @@ export class LoginPage {
     private zone: NgZone
   ) { }
 
+  ionViewDidLoad() {
+    this.authProvider.reauthenticate().then((res) => {
+        this.navCtrl.setRoot('HomePage');
+      },
+      (err) => {
+        console.error(err);
+      }
+    );
+  }
+
   openRegisterPage(): void {
     this.navCtrl.push('RegisterPage');
   }
