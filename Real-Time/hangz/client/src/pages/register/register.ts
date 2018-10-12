@@ -4,6 +4,8 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { AuthProvider } from '../../providers/auth/auth';
 import { UserProvider } from '../../providers/user/user';
 import { DataProvider } from '../../providers/data/data';
+import { UsernameValidator } from '../../validators/username';
+import { EmailValidator } from '../../validators/email';
 
 @IonicPage({
   defaultHistory: ['LoginPage']
@@ -23,13 +25,17 @@ export class RegisterPage {
     private _authProvider: AuthProvider,
     private _userProvider: UserProvider,
     private _dataProvider: DataProvider,
-    private _loadingCtrl: LoadingController
+    private _loadingCtrl: LoadingController,
+    private _usernameValidator: UsernameValidator,
+    private _emailValidator: EmailValidator
   ) {
     this.registerForm = this._fb.group({
-      username: ['', Validators.compose([Validators.maxLength(16), Validators.pattern('[a-zA-Z0-9]*'), Validators.required])],
-      email: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
+      username: ['', Validators.compose([Validators.maxLength(16), Validators.pattern('[a-zA-Z0-9]*'), Validators.required]), this._usernameValidator.checkUsername.bind(this._usernameValidator)],
+      email: ['', Validators.compose([Validators.maxLength(30), Validators.required]), this._emailValidator.checkEmail.bind(this._emailValidator)],
       password: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
       confirmPassword: ['', Validators.compose([Validators.maxLength(30), Validators.required])],
+    }, {
+      validators: this.confirmPassword,
     });
   }
 
@@ -52,6 +58,21 @@ export class RegisterPage {
         this.loading.dismiss();
       })
     }
+  }
+
+  confirmPassword(form) {
+    const password = form.get('password');
+    const confirmPassword = form.get('confirmPassword');
+
+    let validation = {};
+
+    if((password.touched || confirmPassword.touched) && password.value !== confirmPassword.value) {
+      validation = {
+        passwordMismatch: true
+      };
+    }
+
+    return validation;
   }
 
   presentLoading(): void {

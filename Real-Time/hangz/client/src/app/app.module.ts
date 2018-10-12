@@ -14,6 +14,9 @@ import { ChatProvider } from '../providers/chat/chat';
 import { UserProvider } from '../providers/user/user';
 import { AuthProvider } from '../providers/auth/auth';
 
+import { EmailValidator } from '../validators/email';
+import { UsernameValidator } from '../validators/username';
+
 @NgModule({
   declarations: [
     MyApp
@@ -34,6 +37,8 @@ import { AuthProvider } from '../providers/auth/auth';
   providers: [
     StatusBar,
     SplashScreen,
+    UsernameValidator,
+    EmailValidator,
     NoticesProvider,
     DataProvider,
     ChatProvider,
