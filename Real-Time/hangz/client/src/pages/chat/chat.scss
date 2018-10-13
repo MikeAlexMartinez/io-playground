@@ -4,6 +4,12 @@ page-chat {
       background-color: map-get($colors, light);
   }
 
+  .spinner-container {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+
   ion-toolbar .toolbar-background {
       background-color: #fff !important;
       border: none !important;
@@ -23,10 +29,8 @@ page-chat {
   }
 
   .chat-bubble {
-
       width: 65%;
       overflow: hidden;
-
   }
 
   .chat-message {
@@ -39,6 +43,32 @@ page-chat {
   .chat-author {
       font-style: italic;
       float: right;
+  }
+
+  ion-item:last-child .chat-bubble {
+    animation: slideIn 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
+    animation-fill-mode: forwards;
+  }
+
+  .own {
+    float: right;
+
+    .chat-message {
+      background-color: map-get($colors, primary);
+      color: #fff;
+    }
+  }
+
+}
+
+@keyframes slideIn {
+
+  0% {
+      width: 0;
+  }
+
+  100% {
+      width: 65%;
   }
 
 }

@@ -25678,6 +25678,94 @@ ion-navbar.toolbar {
   min-height: calc(46px + env(safe-area-inset-bottom));
 }
 
+error-messages .async-pending {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  height: 20px;
+  font-weight: normal;
+}
+
+error-messages ion-spinner {
+  height: 20px;
+  width: 20px;
+  margin-right: 5px;
+}
+
+error-messages ul {
+  margin: 0;
+  padding-left: 20px;
+  padding-bottom: 5px;
+  color: #fbde41;
+}
+
+skeleton-card ion-card {
+  width: calc(100% - 30px);
+  margin: 15px;
+}
+
+skeleton-card ion-card-content div {
+  width: 100%;
+  height: 200px;
+  background-color: #cecece;
+}
+
+skeleton-card .photo {
+  width: 50px;
+  height: 50px;
+  background-color: #cecece;
+  border-radius: 50%;
+}
+
+skeleton-card .single-bar {
+  margin-top: 20px;
+  background-image: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%), linear-gradient(lightgray 20px, transparent 0);
+  background-repeat: repeat-y;
+  background-size: 50px 80px, 70% 80px;
+  background-position: 0 0, 20px 0;
+  -webkit-animation: singleShine 1s infinite;
+  animation: singleShine 1s infinite;
+}
+
+skeleton-card .staggered-bars {
+  margin-top: 20px;
+  background-image: linear-gradient(100deg, rgba(255, 255, 255, 0), rgba(255, 255, 255, 0.5) 50%, rgba(255, 255, 255, 0) 80%), linear-gradient(lightgray 20px, transparent 0), linear-gradient(lightgray 20px, transparent 0);
+  background-repeat: repeat-y;
+  background-size: 50px 80px, 40% 80px, 65% 80px;
+  background-position: 0 0, 20px 0, 20px 40px;
+  -webkit-animation: staggerShine 1s infinite;
+  animation: staggerShine 1s infinite;
+}
+
+@-webkit-keyframes singleShine {
+  to {
+    background-position: 100% 0, 20px 0;
+  }
+}
+
+@keyframes singleShine {
+  to {
+    background-position: 100% 0, 20px 0;
+  }
+}
+
+@-webkit-keyframes staggerShine {
+  to {
+    background-position: 100% 0, 20px 0, 20px 40px;
+  }
+}
+
+@keyframes staggerShine {
+  to {
+    background-position: 100% 0, 20px 0, 20px 40px;
+  }
+}
+
 page-add-notice .scroll-content {
   background-color: #eaf0f3;
 }
@@ -25699,6 +25787,12 @@ page-add-notice .message-input .item-inner {
 
 page-chat .scroll-content {
   background-color: #eaf0f3;
+}
+
+page-chat .spinner-container {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
 }
 
 page-chat ion-toolbar .toolbar-background {
@@ -25734,6 +25828,40 @@ page-chat .chat-message {
 page-chat .chat-author {
   font-style: italic;
   float: right;
+}
+
+page-chat ion-item:last-child .chat-bubble {
+  -webkit-animation: slideIn 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
+  animation: slideIn 0.2s cubic-bezier(0.65, 0.05, 0.36, 1);
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-chat .own {
+  float: right;
+}
+
+page-chat .own .chat-message {
+  background-color: #f7667b;
+  color: #fff;
+}
+
+@-webkit-keyframes slideIn {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 65%;
+  }
+}
+
+@keyframes slideIn {
+  0% {
+    width: 0;
+  }
+  100% {
+    width: 65%;
+  }
 }
 
 page-home .tabbar {
@@ -25780,15 +25908,121 @@ page-login .login-button {
   color: #7d7c7c;
 }
 
+page-login #hangz-logo path {
+  opacity: 0;
+}
+
+page-login #hangz-logo path:nth-child(0) {
+  -webkit-animation: 1s 0s linear fadeIn;
+  animation: 1s 0s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-login #hangz-logo path:nth-child(1) {
+  -webkit-animation: 1s 0.2s linear fadeIn;
+  animation: 1s 0.2s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-login #hangz-logo path:nth-child(2) {
+  -webkit-animation: 1s 0.4s linear fadeIn;
+  animation: 1s 0.4s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-login #hangz-logo path:nth-child(3) {
+  -webkit-animation: 1s 0.6s linear fadeIn;
+  animation: 1s 0.6s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-login #hangz-logo path:nth-child(4) {
+  -webkit-animation: 1s 0.8s linear fadeIn;
+  animation: 1s 0.8s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+page-login #hangz-logo path:nth-child(5) {
+  -webkit-animation: 1s 1s linear fadeIn;
+  animation: 1s 1s linear fadeIn;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
 page-login .error-logging-in {
   background-color: #f7f07b;
   padding: 10px;
   text-align: center;
   border: 2px solid #fbde41;
+  -webkit-animation: shake 0.7s ease-out;
+  animation: shake 0.7s ease-out;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes fadeIn {
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  100% {
+    opacity: 1;
+  }
+}
+
+@-webkit-keyframes shake {
+  10%, 90% {
+    -webkit-transform: translate3d(-1px, 0, 0);
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    -webkit-transform: translate3d(2px, 0, 0);
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    -webkit-transform: translate3d(-4px, 0, 0);
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    -webkit-transform: translate3d(4px, 0, 0);
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
+@keyframes shake {
+  10%, 90% {
+    -webkit-transform: translate3d(-1px, 0, 0);
+    transform: translate3d(-1px, 0, 0);
+  }
+  20%, 80% {
+    -webkit-transform: translate3d(2px, 0, 0);
+    transform: translate3d(2px, 0, 0);
+  }
+  30%, 50%, 70% {
+    -webkit-transform: translate3d(-4px, 0, 0);
+    transform: translate3d(-4px, 0, 0);
+  }
+  40%, 60% {
+    -webkit-transform: translate3d(4px, 0, 0);
+    transform: translate3d(4px, 0, 0);
+  }
 }
 
 page-notices .scroll-content {
   background-color: #eaf0f3;
+}
+
+page-notices .spinner-container {
+  width: 100%;
+  padding: 20px;
+  text-align: center;
 }
 
 page-notices .notice-cards {
@@ -25841,6 +26075,31 @@ page-notices .control-buttons {
   -webkit-justify-content: flex-end;
   -ms-flex-pack: end;
   justify-content: flex-end;
+}
+
+page-notices .deleting {
+  -webkit-animation: fadeOut 0.5s linear;
+  animation: fadeOut 0.5s linear;
+  -webkit-animation-fill-mode: forwards;
+  animation-fill-mode: forwards;
+}
+
+@-webkit-keyframes fadeOut {
+  0% {
+    opactiy: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes fadeOut {
+  0% {
+    opactiy: 1;
+  }
+  100% {
+    opacity: 0;
+  }
 }
 
 page-register .scroll-content {

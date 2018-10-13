@@ -28,7 +28,17 @@
     <ion-input [(ngModel)]="password" type="password" placeholder="password"></ion-input>
   </ion-item>
 
-  <button ion-button full icon-left color="light" class="login-button" (click)="login()"><ion-icon name="log-in"></ion-icon> Log In</button>
+  <button
+   [disabled]="!(username.length > 0 && password.length > 0)"
+    ion-button
+    full
+    icon-left
+    color="light"
+    class="login-button"
+    (click)="login()"
+  >
+    <ion-icon name="log-in"></ion-icon> Log In
+  </button>
 
   <p *ngIf="failedAttempt" class="error-logging-in">
     Incorrect username or password!

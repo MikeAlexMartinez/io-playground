@@ -18,7 +18,17 @@
 <ion-content>
 
   <ion-list class="notice-list" no-lines>
-    <ion-card class="notice-cards" *ngFor="let notice of notices">
+
+    <div *ngIf="!notices.length > 0">
+      <skeleton-card></skeleton-card>
+      <skeleton-card></skeleton-card>
+    </div>
+
+    <ion-card
+      class="notice-cards" 
+      [class.deleting]="notice?.deleting"
+      *ngFor="let notice of notices"
+    >
 
       <ion-item>
         <ion-avatar item-start>

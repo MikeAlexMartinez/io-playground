@@ -1,5 +1,5 @@
-import { Component } from '@angular/core';
-import { NavController, IonicPage, LoadingController } from 'ionic-angular';
+import { Component, ViewChild, ElementRef } from '@angular/core';
+import { NavController, IonicPage, LoadingController, Content, List } from 'ionic-angular';
 import { ChatProvider } from '../../providers/chat/chat';
 import { UserProvider } from '../../providers/user/user';
 import { AuthProvider } from '../../providers/auth/auth';
@@ -11,10 +11,13 @@ import { AuthProvider } from '../../providers/auth/auth';
 })
 export class ChatPage {
 
+  @ViewChild(Content) contentArea: Content;
+  @ViewChild(List, {read: ElementRef}) chatList: ElementRef;
+
   public chats: Object[] = [];
   public message: string = '';
   public loading: any;
-
+  public mutationObserver: any;
 
   constructor(
     private _navCtrl: NavController,
@@ -44,7 +47,19 @@ export class ChatPage {
     }, (err) => {
       this.loading.dismiss();
       this._navCtrl.setRoot('LoginPage');
-    })
+    });
+
+    this.mutationObserver = new MutationObserver((mutations) => {
+      this.newChatAdded();
+    });
+
+    this.mutationObserver.observe(this.chatList.nativeElement, {
+      childList: true
+    });
+  }
+
+  newChatAdded(): void {
+    this.contentArea.scrollToBottom();
   }
 
   addChat(): void {

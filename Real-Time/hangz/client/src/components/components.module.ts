@@ -1,8 +1,11 @@
 import { NgModule } from '@angular/core';
 import { ErrorMessagesComponent } from './error-messages/error-messages';
+import { SkeletonCardComponent } from './skeleton-card/skeleton-card';
 @NgModule({
-	declarations: [ErrorMessagesComponent],
+	declarations: [ErrorMessagesComponent,
+    SkeletonCardComponent],
 	imports: [],
-	exports: [ErrorMessagesComponent]
+	exports: [ErrorMessagesComponent,
+    SkeletonCardComponent]
 })
 export class ComponentsModule {}

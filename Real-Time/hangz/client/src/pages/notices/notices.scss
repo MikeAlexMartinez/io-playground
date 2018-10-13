@@ -4,6 +4,12 @@ page-notices {
       background-color: map-get($colors, light);
   }
 
+  .spinner-container {
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+  }
+
   .notice-cards {
       width: calc(100% - 30px);
       margin: 15px;
@@ -41,4 +47,19 @@ page-notices {
       justify-content: flex-end;
   }
 
+  .deleting { 
+    animation: fadeOut 0.5s linear;
+    animation-fill-mode: forwards;
+  }
+
+}
+
+@keyframes fadeOut {
+  0% {
+    opactiy: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }

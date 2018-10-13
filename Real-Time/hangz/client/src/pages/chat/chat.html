@@ -11,10 +11,17 @@
 
 <ion-content>
 
+  <div
+    *ngIf="!chats.length > 0"
+    class="spinner-container"
+  >
+    <ion-spinner></ion-spinner>
+  </div>
+
   <ion-list class="chat-list" no-lines>
 
     <ion-item *ngFor="let chat of chats">
-      <div class="chat-bubble">
+      <div class="chat-bubble" [class.own]="chat.author == userProvider?.currentUser?.user_id">
         <p class="chat-message">{{chat.message}}</p>
         <p class="chat-author">{{chat.author}}</p>
       </div>
@@ -32,7 +39,7 @@
     </textarea>
 
     <ion-buttons right>
-      <button (click)="addChat()" ion-button icon-only item-right class="send-chat-button">
+      <button (click)="addChat()" ion-button icon-only item-right class="send-chat-button" [disabled]="!message.length > 0">
         <ion-icon name="send"></ion-icon>
       </button>
     </ion-buttons>

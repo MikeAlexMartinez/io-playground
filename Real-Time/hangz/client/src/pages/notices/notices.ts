@@ -73,7 +73,10 @@ export class NoticesPage {
         {
           text: 'Delete',
           handler: () => {
-            this._noticesProvider.deleteNotice(notice);
+            notice.deleting = true;
+            setTimeout(() => {
+              this._noticesProvider.deleteNotice(notice);
+            }, 500);
           }
         },
         {
